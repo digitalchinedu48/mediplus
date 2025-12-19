@@ -41,6 +41,7 @@ jobs:
           chmod 600 private_key.pem
           cat private_key.pem
           ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@100.48.86.11 "docker pull 715411138617.dkr.ecr.us-east-1.amazonaws.com/mediplus:${{ github.run_number }}"
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@100.48.86.11 "docker rm -f mediplus"
           ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@100.48.86.11 "docker run -d -p 80:80 715411138617.dkr.ecr.us-east-1.amazonaws.com/mediplus:${{ github.run_number }}" 
 
       
