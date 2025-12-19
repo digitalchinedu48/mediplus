@@ -47,7 +47,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no \
               -i private_key.pem \
               ubuntu@100.48.86.11 \
-              "echo SSH CONNECTION SUCCESSFUL"
+
 
       # - name: Deploy Docker container
       #   run: |
