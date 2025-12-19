@@ -31,23 +31,39 @@ jobs:
           
   deploy:
     runs-on: ubuntu-latest
-    needs: build-push
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up SSH key
         run: |
+          # Recreate PEM file from Base64 secret
           echo "$EC2_PRIVATE_KEY_B64" | base64 -d > private_key.pem
           chmod 600 private_key.pem
 
       - name: Test SSH connection
         run: |
           ssh -o StrictHostKeyChecking=no \
-          -i private_key.pem \
-          ubuntu@100.48.86.11 \
-          "echo SSH CONNECTION SUCCESSFUL"
+              -i private_key.pem \
+              ubuntu@100.48.86.11 \
+              "echo SSH CONNECTION SUCCESSFUL"
 
-          ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@100.48.86.11 "docker pull 715411138617.dkr.ecr.us-east-1.amazonaws.com/mediplus:v1"
-          ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@100.48.86.11 "docker run -d -p 80:80 715411138617.dkr.ecr.us-east-1.amazonaws.com/mediplus:v1" 
+      - name: Deploy Docker container
+        run: |
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@100.48.86.11 << 'EOF'
+          # Login to AWS ECR
+          aws ecr get-login-password --region us-east-1 | \
+          docker login --username AWS --password-stdin 715411138617.dkr.ecr.us-east-1.amazonaws.com
+
+          # Pull latest image
+          docker pull 715411138617.dkr.ecr.us-east-1.amazonaws.com/mediplus:v1
+
+          # Stop & remove existing container (if any)
+          docker stop mediplus || true
+          docker rm mediplus || true
+
+          # Run new container
+          docker run -d --name mediplus -p 80:80 \
+          715411138617.dkr.ecr.us-east-1.amazonaws.com/mediplus:v1
+          EOF
+
