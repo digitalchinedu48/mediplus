@@ -49,5 +49,5 @@ jobs:
           ubuntu@100.48.86.11 \
           "echo SSH CONNECTION SUCCESSFUL"
 
-          ssh -o StrictHostKeyChecking=no -i mykey.pem ubuntu@100.48.86.11 "docker pull 715411138617.dkr.ecr.us-east-1.amazonaws.com/mediplus:v1"
-          ssh -o StrictHostKeyChecking=no -i mykey.pem ubuntu@100.48.86.11 "docker run -d -p 80:80 715411138617.dkr.ecr.us-east-1.amazonaws.com/mediplus:v1" 
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@100.48.86.11 "docker pull 715411138617.dkr.ecr.us-east-1.amazonaws.com/mediplus:v1"
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@100.48.86.11 "docker run -d -p 80:80 715411138617.dkr.ecr.us-east-1.amazonaws.com/mediplus:v1" 
