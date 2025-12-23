@@ -37,4 +37,6 @@ jobs:
           echo "${{ secrets.EC2_KEY_PEM }}" > mykey.pem
           chmod 600 mykey.pem
           cat mykey.pem
-          
+          ssh -o StrictHostKeyChecking=no -i mykey.pem ubuntu@44.222.199.47 "docker ps"
+
+          ssh -o StrictHostKeyChecking=no -i mykey.pem ubuntu@44.222.199.47 "hostnamectl"
